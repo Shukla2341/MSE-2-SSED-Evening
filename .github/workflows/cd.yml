@@ -38,7 +38,7 @@ jobs:
           RAW_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           # Docker Hub repository names and usernames must be strictly lowercase
-          LOWER_USER=$(echo "${RAW_USERNAME:-ask99ayush}" | tr '[:upper:]' '[:lower:]')
+          LOWER_USER=$(echo "${RAW_USERNAME:-ashutoshshukla9335}" | tr '[:upper:]' '[:lower:]')
           echo "DOCKERHUB_NAMESPACE=${LOWER_USER}" >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx
