@@ -32,6 +32,8 @@ services:
   backend:
     image: ashutoshshukla9335/backend:latest
     restart: unless-stopped
+    ports:
+      - "3000:3000"
     environment:
       PORT: 3000
       DATABASE_URL: ${DATABASE_URL}
