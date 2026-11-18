@@ -1,7 +1,7 @@
 # Multi-stage build for React frontend application
 
 # Stage 1: Build static assets using Node.js
-FROM node:20-alpine AS build
+FROM node:20-slim AS build
 
 WORKDIR /app
 
@@ -23,8 +23,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose web server port
-EXPOSE 80
+# Expose web server port
+EXPOSE 8080
 
 # Health check to verify Nginx is serving content
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
-  CMD ["wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+  CMD ["wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
