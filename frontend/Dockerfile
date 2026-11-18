@@ -24,7 +24,7 @@ COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose web server port
 # Expose web server port
-EXPOSE 8080
+EXPOSE 80
 
 # Health check to verify Nginx is serving content
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
