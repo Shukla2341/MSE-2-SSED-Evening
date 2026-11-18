@@ -1,37 +1,30 @@
+# Multi-stage build for React frontend application
 
-# Stage 1: Build frontend
-# before
-FROM node:20-alpine AS builder
-
-# after
-FROM node:20-slim AS builder
+# Stage 1: Build static assets using Node.js
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
 # Install dependencies
-RUN npm ci
+COPY package*.json ./
+RUN npm install
 
-# Copy source code
+# Copy source files and build
 COPY . .
-
-# Build React application
 RUN npm run build
 
-# Stage 2: Production server
-FROM nginx:alpine
+# Stage 2: Production runtime with lightweight Nginx web server
+FROM nginx:1.27-alpine AS production
 
-# Remove default Nginx website
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copy production build
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy Nginx configuration
+# Copy custom Nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 8080
+# Copy compiled static artifacts from build stage
+COPY --from=build /app/dist /usr/share/nginx/html
 
-CMD ["nginx", "-g", "daemon off;"]
+# Expose web server port
+EXPOSE 80
+
+# Health check to verify Nginx is serving content
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
+  CMD ["wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
